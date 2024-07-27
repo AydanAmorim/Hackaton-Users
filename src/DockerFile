@@ -3,7 +3,7 @@
 #
 FROM maven:3.9.6-amazoncorretto-21 AS build
 
-WORKDIR /ecommerce-user
+WORKDIR /Hackaton-Users
 
 COPY pom.xml .
 RUN mvn -B dependency:go-offline
@@ -16,10 +16,10 @@ RUN mvn -B package -DskipTests
 #
 FROM amazoncorretto:21-alpine-jdk
 
-WORKDIR /ecommerce-user
+WORKDIR /Hackaton-Users
 
-COPY --from=build /ecommerce-user/target/*.jar ./ecommerce-user.jar
+COPY --from=build /Hackaton-Users/target/*.jar ./Hackaton-Users.jar
 
 EXPOSE 7076
 
-ENTRYPOINT ["java","-jar","ecommerce-user.jar"]
+ENTRYPOINT ["java","-jar","Hackaton-Users.jar"]

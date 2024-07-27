@@ -11,32 +11,31 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping(value="/users")
-@Tag(name ="User management route")
+@RequestMapping(value="/api/usuarios")
+@Tag(name ="Gerenciamento do cadastro de usuários")
 public class UserWeb {
     @Resource
     private UserController userController;
 
-    @Operation(summary = "Get all Users Information")
+    @Operation(summary = "Consultar cadastro de usuários (Somente administrador pode acessar)")
     @GetMapping
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<PagedResponse<UserDto>> findAll(@Parameter(description = "Default value 10. Max value 1000", example = "10") @RequestParam(required = false) Integer pageSize,
-                                                          @Parameter(description = "Default value 0", example = "0") @RequestParam(required = false) Integer initialPage) {
+    public ResponseEntity<PagedResponse<UserDto>> findAll(@Parameter(description = "Valor padrão 10. Valor máximo 1000", example = "10") @RequestParam(required = false) Integer pageSize,
+                                                          @Parameter(description = "valor padrão 0", example = "0") @RequestParam(required = false) Integer initialPage) {
 
         Pagination page = new Pagination(initialPage, pageSize);
         return ResponseEntity.ok(this.userController.findAll(page));
     }
 
-    @Operation(summary="Add a new user")
-    @PostMapping("basicUser")
+    @Operation(summary="Adicionar um novo usuário")
+    @PostMapping("adicionar_usuario_basico")
     public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto) {
         UserDto userSavedDto = this.userController.insertBasicUser(userDto);
         return ResponseEntity.ok(userSavedDto);
     }
 
-    @Operation(summary="Add a new ADMIN user")
-    @PostMapping("adminUser")
+    @Operation(summary="Adicionar um novo usuário Administrador (Somente administrador pode acessar)")
+    @PostMapping("adicionar_usuario_admin")
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<UserDto> addAdminUser(@RequestBody UserDto userDto) {
         UserDto userSavedDto = this.userController.insertAdminUser(userDto);

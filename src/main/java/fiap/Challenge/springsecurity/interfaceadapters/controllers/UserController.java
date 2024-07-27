@@ -41,19 +41,20 @@ public class UserController {
 
         return this.userPresenter.convert(users);
     }
-    public UserDto insertAdminUser(UserDto userDto){
-        var roleName = Role.Values.ADMIN.name();
-        var basicRole = getRole(roleName);
-        return insertUser(userDto, basicRole);
+
+    public UserDto insertAdminUser(UserDto userDto) {
+        var adminRole = getRole(Role.Values.ADMIN);
+
+        return insertUser(userDto, adminRole == null ? new Role(Role.Values.ADMIN) : adminRole);
     }
 
-    public UserDto insertBasicUser(UserDto userDto){
-        var roleName = Role.Values.BASIC.name();
-        var basicRole = getRole(roleName);
-        return insertUser(userDto, basicRole);
+    public UserDto insertBasicUser(UserDto userDto) {
+        var basicRole = getRole(Role.Values.BASIC);
+
+        return insertUser(userDto, basicRole == null ? new Role(Role.Values.BASIC) : basicRole);
     }
 
-    private UserDto insertUser(UserDto userDto, Role role){
+    private UserDto insertUser(UserDto userDto, Role role) {
         this.create(userDto);
 
         User user = this.userPresenter.convert(userDto);
@@ -65,18 +66,18 @@ public class UserController {
         return this.userPresenter.convert(user);
     }
 
-    private Role getRole(String roleName){
-        return roleGateway.findRoleByName(roleName);
+    private Role getRole(Role.Values userType) {
+        Optional<Role> role = roleGateway.findRoleByName(userType);
+
+        return role.orElse(null);
     }
 
-    private void create(UserDto userDto){
-        Optional userCreate = this.userGateway.findUserByUsername(userDto.getUsername());
+    private void create(UserDto userDto) {
+        Optional<User> userCreate = this.userGateway.findUserByUsername(userDto.getUsername());
 
-        if ( userCreate.isPresent() ){
+        if (userCreate.isPresent()) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
-
-
 
 }

@@ -1,6 +1,5 @@
 package fiap.Challenge.springsecurity.interfaceadapters.controllers;
 
-import fiap.Challenge.springsecurity.config.JwtControl;
 import fiap.Challenge.springsecurity.interfaceadapters.gateway.UserGateway;
 import fiap.Challenge.springsecurity.interfaceadapters.presenters.login.LoginRequest;
 import fiap.Challenge.springsecurity.interfaceadapters.presenters.login.LoginResponse;
@@ -14,14 +13,14 @@ public class LoginController {
     @Resource
     private UserGateway userGateway;
     @Resource
-    private JwtControl jwtControl;
+    private JwtController jwtController;
     @Resource
     private BCryptPasswordEncoder passwordEncoder;
 
     public LoginResponse create(LoginRequest loginRequest) {
         validateLogin(loginRequest);
 
-        return this.jwtControl.createTokenJWT(loginRequest);
+        return this.jwtController.createTokenJWT(loginRequest);
     }
 
     private void validateLogin(LoginRequest loginRequest){

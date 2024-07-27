@@ -5,13 +5,15 @@ import fiap.Challenge.springsecurity.framework.repository.RoleRepository;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class RoleGateway {
     @Resource
     private RoleRepository roleRepository;
 
-    public Role findRoleByName(String roleName){
-        return this.roleRepository.findRoleByName(roleName);
+    public Optional<Role> findRoleByName(Role.Values role){
+        return this.roleRepository.findByType(role);
     }
 
 }
