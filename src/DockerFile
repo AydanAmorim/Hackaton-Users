@@ -3,7 +3,7 @@
 #
 FROM maven:3.9.6-amazoncorretto-21 AS build
 
-WORKDIR /user
+WORKDIR /ecommerce-user
 
 COPY pom.xml .
 RUN mvn -B dependency:go-offline
@@ -16,7 +16,7 @@ RUN mvn -B package -DskipTests
 #
 FROM amazoncorretto:21-alpine-jdk
 
-WORKDIR /user
+WORKDIR /ecommerce-user
 
 COPY --from=build /ecommerce-user/target/*.jar ./ecommerce-user.jar
 
