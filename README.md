@@ -1,14 +1,21 @@
-# FIAP Tech Challenge 5
-## API para cadastro de usuários
+# API para cadastro de usuários e geração de token JWT
 
-Este repositório refere-se ao microsserviço de usuários para atender aos requisitos do desafio proposto pelo 
-MBA em desenvolvimento Java, este projeto envolve a comunicação entre microserviços.
+## FIAP Tech Challenge 5
+
+Este repositório refere-se ao microsserviço de usuários para atender aos requisitos do desafio proposto pela
+pós-graduação em arquitetura e desenvolvimento Java.
+
+Este é responsável pela criação de usuaŕios e geração de tokens.
+
+O [Gateway](https://github.com/fysabelah/payment-processing-system/tree/main/gateway-with-authentication) faz uso deste
+serviço para autorizar o acesso aos demais.
 
 ## Principais recursos deste microserviço
 
 Responsável por cadastrar informações dos usuarios, assim será possível:
+
 * Incluir novos usuários;
-* gerar token para autorização no serviço;
+* Gerar token para autorização no serviço;
 * Consultar usuários do sistema;
 
 ## Tecnologias
@@ -27,106 +34,95 @@ Responsável por cadastrar informações dos usuarios, assim será possível:
 
 ## Sobre autenticação (opcional)
 
-o método de autenticação utilizado pelo spring security, neste caso, se baseia em ter um par de chaves uma pública e uma privada, com as duas informações podemos gerar o token de acesso ao serviço.
+o método de autenticação utilizado pelo spring security, neste caso, se baseia em ter um par de chaves uma pública e uma
+privada, com as duas informações podemos gerar o token de acesso ao serviço.
 
 Você poderá consultar o link a seguir que explica como gerar o par de chaves: https://cryptotools.net/rsagen
 
 este código já dispõe deste par de chaves, são os arquivos "app.pub" e "app.key"
 
-
 ## Informações importantes!
 
-Este serviço foi desenvolvido para ser um material de estudo. Portanto existem vunerabilidades que devem ser tratadas para um ambiente produtivo
-é recomendado definir o nome de usuário e senha no arquivo de variáveis de ambiente ".env"
-defina os valores preenchendo as seguintes variáveis, 
+Este serviço foi desenvolvido para ser um material de estudo. Portanto existem vunerabilidades que devem ser tratadas
+para um ambiente produtivo.
 
-Banco de dados (postgree)
+## Como executar
+
+O projeto possui valores default para variáveis utilizadas, com exceção do _PROFILE_ e _SWAGGER_SERVER_. Logo, caso não
+queria alterar
+nada, crie o arquivo .env no diretório root com a versão reduzida do arquivo. Do contrário, utilize a versão completa.
+
+    As variáveis podem ser setadas como preferir.
+
+As informações de execução considera que esteja executando apenas este, caso deseje executar todos os serviços, sugiro
+verificar o [projeto completo](https://github.com/fysabelah/payment-processing-system).
+
+    Talvez seja interessante clonar o projeto por completo, subir os container e parar o container que deseje executar local.
+
+**Obs.**: Este projeto informará que não foi possível conectar com
+a [descoberta de serviços (Eureka Server)](https://github.com/fysabelah/discovery-services/tree/main). Este projeto
+também faz conexão com o serviço de cliente, logo, sem o Eureka e serviço de cliente, ele pode não funcionar como o
+esperado.
+
+### Versão resumida
+
 ```
-DATABASE_USERNAME=[USERNAME]
-DATABASE_PASSWORD=[PASSWORD]
+PROFILE=dev
+
+SWAGGER_SERVER=http://localhost:7072
 ```
 
-Usuário e senha padrão da aplicação (user admin do sistema)
-```
-SYSTEM_DEFAULT_USERNAME=[USERNAME]
-SYSTEM_DEFAULT_PASSWORD=[PASSWORD]
-```
-vale ressaltar que caso não seja definido, o "AdminUserConfig" definirá valores padrões para o usuário e senha
-``` java
-    (...)
-    @Value("${SYSTEM_DEFAULT_USERNAME:admin}")
-    private String DEFAULT_USERNAME;
+### Versão completa
 
-    @Value("${SYSTEM_DEFAULT_PASSWORD:123}")
-    private String DEFAULT_PASSWORD;
-    (...)
+```
+PROFILE=dev
+
+DATABASE_HOST=localhost:5433
+DATABASE_USERNAME=root
+DATABASE_PASSWORD=root
+
+SWAGGER_SERVER=http://localhost:7072
 ```
 
-## Primeiros passos
+### Primeiros passos
 
-Na raiz do projeto, rodar o comando para subir o container do postgreeSQL, criar o banco de dados e popular a tabela de regras (roles) com as regras padrões do sistema e após, inicie o sistema.
+Na raiz do projeto, rodar o comando para subir o container do PostgreeSQL, criar o banco de dados.
+
 ```
 docker compose up
 ```
 
-## Login com Swagger
-por padrão, o tomcat irá subir o serviço na porta :8080, desta maneira você poderá acessar o swagger (documentação)
+Será criado dois usuários na primeira execução do projeto, ambos possuem perfil administrador. O primeiro refere-se ao
+requisitado pela FIAP e o segundo foi por vontade dos desenvolvedores.
+
 ```
-    http://localhost:8080/swagger-ui/index.html
-```
-
-Acessando a rota de login, poderá informar o usuário e senha e estando corretos o sistema irá gerar um token JWT com as credenciais para acesso as demais rotas.
-
-<img src ="./assets/login.png">
-
-copie o accesToken que foi gerado e cole no autorizador do Swagger
-<img src ="./assets/Authorize.png">
-
-agora, você poderá acessar os demais recursos.
-
-<img src ="./assets/request_logado.png">
-
-## Vendo o conteúdo de um token JWT
-Com o token de acesso, você pode usar o site (https://jwt.io/) para decriptar um token JWT e ver o conteúdo deste, caso seja necessário:
-<img src ="./assets/jwtToken.png">
-
-
-## Como permitir somente usuário ADMIN à acessar uma rota?
-
-Nas configurações da classe SpringSecurity (SecurityConfig), precisamos:
-- Utilizar a *annotation* @EnableMethodSecurity, com ela deixamos responsáveis por definir o escopo de cada usuário à ser definido em cada uma das *restControllers*;
-- Iremos definir as rotas que são de uso geral como *.permiteAll()*.
-
-``` Java
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            (...)
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                .requestMatchers(HttpMethod.POST, "/users/basicUser").permitAll()
-                .anyRequest().authenticated());
-
-        return http.build();
-    }
-```
-
-E em cada "RestController" Utilize a annotation @PreAuthorize, definindo que usuários com o escopo definido como "ADMIN" poderão ter acesso ao recurso.
-
-``` Java
-@Operation(summary = "Get all Users Information")
-@GetMapping
-@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-public ResponseEntity<PagedResponse<UserDto>> findAll(@Parameter(description = "Default value 10. Max value 1000", example = "10") @RequestParam(required = false) Integer pageSize,
-                                                      @Parameter(description = "Default value 0", example = "0") @RequestParam(required = false) Integer initialPage) {
-
-    Pagination page = new Pagination(initialPage, pageSize);
-    return ResponseEntity.ok(this.userController.findAll(page));
+{
+    "usuario": "adj2",
+    "senha": "adj@1234"
 }
 ```
 
+```
+{
+    "usuario": "sudosu",
+    "senha": "1amr00t"
+}
+```
 
-## Agradecimentos
+## Acesso a documentação
 
-Na elaboração do projeto foi possível utilizar como fonte de consulta um vídeo no youtube.
-Obrigado ao canal Build & Run por disponbilizar este conteúdo. O vídeo utilizado foi https://www.youtube.com/watch?v=nDst-CRKt_k
+Por padrão, o tomcat irá subir o serviço na porta 7072, desta maneira você poderá acessar o Swagger (documentação)
+
+```
+    http://localhost:7072/doc/user.html
+```
+
+Acessando o Swagger, busque pelo endpoint de _Autenticação de usuário_. Com exceção do enpoint de _Validação de Token_ e
+_Autenticação de usuário_, todos são bloqueados, logo, será necessário utilizar um dos usuários previamente cadastrado
+para novos registros.
+
+<img src ="./assets/criar-token.png">
+
+Com o token gerado, basta adicioná-lo no _Authorize_ do Swagger, conforme abaixo, e testar as operações.
+
+<img src ="./assets/autorizar.png">
