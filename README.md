@@ -117,12 +117,18 @@ Por padrão, o tomcat irá subir o serviço na porta 7072, desta maneira você p
     http://localhost:7072/doc/user.html
 ```
 
-Acessando o Swagger, busque pelo endpoint de _Autenticação de usuário_. Com exceção do enpoint de _Validação de Token_ e
-_Autenticação de usuário_, todos são bloqueados, logo, será necessário utilizar um dos usuários previamente cadastrado
-para novos registros.
+Acessando o Swagger, busque pelo endpoint de _Autenticação de usuário_, com exceção deste, todos são bloqueados, logo,
+será necessário utilizar um dos usuários previamente cadastrado
+para as operações.
 
 <img src ="./assets/criar-token.png">
 
-Com o token gerado, basta adicioná-lo no _Authorize_ do Swagger, conforme abaixo, e testar as operações.
+Selecione o toke gerado conforme apresentado abaixo.
+
+<img src="./assets/token.png">
+
+Adicione o token gerado no _Authorize_ do Swagger, conforme abaixo.
 
 <img src ="./assets/autorizar.png">
+
+Agora está tudo pronto para testas operações.
