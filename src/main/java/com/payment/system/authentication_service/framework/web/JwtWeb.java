@@ -2,6 +2,7 @@ package com.payment.system.authentication_service.framework.web;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ public class JwtWeb {
     private RSAPublicKey publicKey;
 
     @GetMapping(value = "/.well-known/jwks.json")
+    @Operation(description = "O endpoint deve ser usado apenas pelo Gateway",hidden = true)
     public Map<String, Object> getPublicKey() {
         RSAKey key = new RSAKey.Builder(publicKey).build();
 
