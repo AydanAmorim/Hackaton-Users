@@ -1,4 +1,4 @@
-# FIAP Tech Challenge 5
+# FIAP Hackathon
 ## API para cadastro de usuários
 
 Este repositório refere-se ao microsserviço de usuários para atender aos requisitos do desafio proposto pelo 
