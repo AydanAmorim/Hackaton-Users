@@ -1,6 +1,6 @@
 # API para cadastro de usuários e geração de token JWT
 
-## FIAP Tech Challenge 5
+## FIAP Hackathon
 
 Este repositório refere-se ao microsserviço de usuários para atender aos requisitos do desafio proposto pela
 pós-graduação em arquitetura e desenvolvimento Java.
