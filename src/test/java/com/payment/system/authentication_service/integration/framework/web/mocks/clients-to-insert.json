@@ -1,0 +1,20 @@
+[
+  {
+    "username": "admin",
+    "clientId": 1,
+    "password": "strong",
+    "role": "ADMIN"
+  },
+  {
+    "username": "sudo",
+    "clientId": 2,
+    "password": "strong2",
+    "role": "ADMIN"
+  },
+  {
+    "username": "ken",
+    "clientId": 3,
+    "password": "justken",
+    "role": "BASIC"
+  }
+]

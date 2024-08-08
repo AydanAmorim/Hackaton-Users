@@ -132,3 +132,9 @@ Adicione o token gerado no _Authorize_ do Swagger, conforme abaixo.
 <img src ="./assets/autorizar.png">
 
 Agora está tudo pronto para testas operações.
+
+## Cobertura de Teste com JaCoCo
+
+Alcançando um total de 82% de cobertura incluindo teste de unidade e integração.
+
+<img src="./assets/cobertura-teste.png">

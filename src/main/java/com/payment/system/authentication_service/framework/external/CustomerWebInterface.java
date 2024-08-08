@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient("customer-service")
-interface CustomerWebInterface {
+public interface CustomerWebInterface {
 
     @GetMapping(value = "/cliente/{id}")
     JsonNode findById(@PathVariable Integer id);
