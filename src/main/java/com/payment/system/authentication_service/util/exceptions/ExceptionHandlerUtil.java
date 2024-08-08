@@ -69,8 +69,8 @@ public class ExceptionHandlerUtil {
 
         StandardError error = new StandardError(status.value(),
                 "Bloqueado por regra de negócio",
-                request.getRequestURI(),
-                exception.getMessage());
+                exception.getMessage(),
+                request.getRequestURI());
 
         return ResponseEntity.status(status).body(error);
     }
